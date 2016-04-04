@@ -58,12 +58,30 @@ NS_LONG_BEGIN
         return "";
     }
 
-    void LSqliteCommand::pushLine(std::string sentence)
+    int LSqliteCommand::pushLine(std::string sentence)
     {
         std::map<std::string, std::string> sentenceData;
         sentenceData["origin"] = sentence;
         sentenceData["value"] = sentence;
         m_sentenceVector.push_back(sentenceData);
+        return m_sentenceVector.size() - 1;
+    }
+
+    int LSqliteCommand::pushLineFormat(std::string sentence, ...)
+    {
+        std::map<std::string, std::string> sentenceData;
+        sentenceData["origin"] = sentence;
+        sentenceData["value"] = sentence;
+
+        va_list args;
+        va_start(args, sentence);
+        char buffer[MAX_SENTENCE_BUF_LONGTH] = {0};
+        vsprintf(buffer, sentence.c_str(), args);
+        sentenceData["value"].clear();
+        sentenceData["value"] = buffer;
+        va_end(args);
+        m_sentenceVector.push_back(sentenceData);
+        return m_sentenceVector.size() - 1;
     }
 
     void LSqliteCommand::bindData(int index, ...)
@@ -76,7 +94,6 @@ NS_LONG_BEGIN
 
             char buffer[MAX_SENTENCE_BUF_LONGTH] = {0};
             vsprintf(buffer, origin.c_str(), args);
-            //LLOG("buffer = %s", buffer);
             m_sentenceVector.at(index)["value"] .clear();
             m_sentenceVector.at(index)["value"] = buffer;
 

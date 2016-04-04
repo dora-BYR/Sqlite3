@@ -24,7 +24,8 @@ public:
     LSqliteCommand * create();
     LSqliteCommand * create(std::string sentence, bool isTransactionEnabeld = false);
 
-    void pushLine(std::string sentence);
+    int pushLine(std::string sentence);
+    int pushLineFormat(std::string sentence, ...);
 
     void bindData(int index, ...);
 

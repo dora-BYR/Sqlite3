@@ -36,9 +36,9 @@ void LTest::test1()
     command.clear();
     for (int i = 0; i < 100; ++i)
     {
-        command.pushLine("INSERT OR REPLACE INTO `test_records` (`id`, `name`) VALUES(%d, '%s');");
-        command.bindData(i, i+1, "longhui-A");
-        //LLOG("s1 = %s", command.getSentence().c_str());
+        command.reset("INSERT OR REPLACE INTO `test_records` (`id`, `name`) VALUES(%d, '%s');");
+        command.bindData(0, i+1, "longhui-A");
+        LLOG("s1-1 = %s", command.getSentence().c_str());
         command.execute();
     }
     tick2 = clock();
@@ -50,9 +50,10 @@ void LTest::test1()
     command.setTransactionEnabed(true);
     for (int i = 100; i < 200; ++i)
     {
-        command.pushLine("INSERT OR REPLACE INTO `test_records` (`id`, `name`) VALUES(%d, '%s');");
-        command.bindData(i, i+1, "longhui-B");
+        command.pushLineFormat("INSERT OR REPLACE INTO `test_records` (`id`, `name`) VALUES(%d, '%s');", i+1, "longhui-B");
+        LLOG("s1-2 = %s", command.getSentence(i - 100).c_str());
     }
+    command.execute();
     tick2 = clock();
     LLOG("transaction time used = %ld", tick2 - tick1);
 
